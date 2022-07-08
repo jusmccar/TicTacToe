@@ -8,7 +8,7 @@ import { Component, OnInit } from '@angular/core';
 export class BoardComponent implements OnInit {
   squares: any[] = Array(9).fill(null);
   player: string = "";
-  winner: string = "";
+  winner: string | undefined;
 
   constructor() { }
 
@@ -18,11 +18,20 @@ export class BoardComponent implements OnInit {
 
   newGame() {
     this.player = Math.random() < 0.5 ? "X" : "O";
+    this.squares.fill(null);
+    this.winner = undefined;
   }
 
   makeMove(ind: number) {
-    if (!this.squares[ind]) {
+    if (!this.winner && !this.squares[ind]) {
       this.squares.splice(ind, 1, this.player);
+
+      this.winner = this.calcWinner();
+
+      if (this.winner) {
+        return;
+      }
+
       this.player = this.player === "O" ? "X" : "O";
     }
   }
